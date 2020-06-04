@@ -27,7 +27,7 @@ CREATE SEQUENCE film_film_id_seq
 --
 
 CREATE DOMAIN year AS integer
-	CONSTRAINT year_check CHECK (((VALUE >= 1901) AND (VALUE <= 2155)));
+    CONSTRAINT year_check CHECK (((VALUE >= 1901) AND (VALUE <= 2155)));
 
 --
 -- Name: film; Type: TABLE; Schema: public; Owner: postgres
@@ -80,3 +80,38 @@ CREATE TABLE film_actor (
     film_id smallint NOT NULL,
     last_update timestamp with time zone DEFAULT now() NOT NULL
 );
+
+--
+-- Name: film_actor film_actor_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+ALTER TABLE ONLY film_actor
+    ADD CONSTRAINT film_actor_pkey PRIMARY KEY (actor_id, film_id);
+
+ALTER TABLE ONLY actor
+    ADD CONSTRAINT actor_pkey PRIMARY KEY (actor_id);
+
+ALTER TABLE ONLY film
+    ADD CONSTRAINT film_pkey PRIMARY KEY (film_id);
+
+
+--
+-- Name: idx_fk_film_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_fk_film_id ON film_actor USING btree (film_id);
+
+
+--
+-- Name: film_actor film_actor_actor_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY film_actor
+    ADD CONSTRAINT film_actor_actor_id_fkey FOREIGN KEY (actor_id) REFERENCES actor(actor_id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: film_actor film_actor_film_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY film_actor
+    ADD CONSTRAINT film_actor_film_id_fkey FOREIGN KEY (film_id) REFERENCES film(film_id) ON UPDATE CASCADE ON DELETE RESTRICT;
